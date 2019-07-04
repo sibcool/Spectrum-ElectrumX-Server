@@ -59,7 +59,7 @@ class CoinError(Exception):
 
 
 class Coin(object):
-     '''Base class of coin hierarchy.'''
+    '''Base class of coin hierarchy.'''
 
     REORG_LIMIT = 200
     # Not sure if these are coin-specific
