@@ -4,8 +4,8 @@ Protocol Basics
 Message Stream
 --------------
 
-Clients and servers communicate using **JSON RPC** over an unspecified
-underlying stream transport protocol, typically TCP or SSL.
+Clients and servers communicate using **JSON RPC** over an unspecified underlying stream
+transport.  Examples include TCP, SSL, WS and WSS.
 
 Two standards `JSON RPC 1.0
 <http://www.jsonrpc.org/specification_v1>`_ and `JSON RPC 2.0
@@ -25,11 +25,12 @@ Clients making batch requests should limit their size depending on the
 nature of their query, because servers will limit response size as an
 anti-DoS mechanism.
 
-Each RPC call, and each response, is separated by a single newline in
-their respective streams.  The JSON specification does not permit
-control characters within strings, so no confusion is possible there.
-However it does permit newlines as extraneous whitespace between
-elements; client and server MUST NOT use newlines in such a way.
+Over TCP and SSL raw sockets each RPC call, and each response, MUST be terminated by a
+single newline to delimit messages.  Websocket messages are already framed so they MUST
+NOT be newline terminated.  The JSON specification does not permit control characters
+within strings, so no confusion is possible there.  However it does permit newlines as
+extraneous whitespace between elements; client and server MUST NOT use newlines in such a
+way.
 
 If using JSON RPC 2.0's feature of parameter passing by name, the
 names shown in the description of the method or notification in
@@ -75,38 +76,6 @@ possible in order to negotiate the precise protocol version; see its
 description for more detail.  All responses received in the stream
 from and including the server's response to this call will use its
 negotiated protocol version.
-
-
-.. _deserialized header:
-
-Deserialized Headers
---------------------
-
-A :dfn:`deserialized header` is a dictionary describing a block at a
-given height.
-
-A typical example would be similar to this template::
-
-  {
-    "block_height": <integer>,
-    "version": <integer>,
-    "prev_block_hash": <hexadecimal string>,
-    "merkle_root":  <hexadecimal string>,
-    "timestamp": <integer>,
-    "bits": <integer>,
-    "nonce": <integer>
-  }
-
-.. note:: The precise format of a deserialized block header varies by
-  coin, and also potentially by height for the same coin.  Detailed
-  knowledge of the meaning of a block header is neither necessary nor
-  appropriate in the server.
-
-  Consequently deserialized headers are deprecated and will be removed
-  from the protocol in a future version.  Instead, raw headers (as
-  hexadecimal strings) along with their height will be returned by new
-  RPC calls, and it will be up to the client to interpret the meaning
-  of the raw header.
 
 
 .. _script hashes:
